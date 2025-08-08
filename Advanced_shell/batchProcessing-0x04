@@ -1,0 +1,29 @@
+#!/bin/bash
+# Script to fetch Pokémon data in parallel and wait for all processes
+
+POKEMON_LIST=(bulbasaur ivysaur venusaur charmander charmeleon)
+OUTPUT_DIR="pokemon_data_parallel"
+API_URL="https://pokeapi.co/api/v2/pokemon"
+ERROR_LOG="errors_parallel.txt"
+
+mkdir -p "$OUTPUT_DIR"
+> "$ERROR_LOG"
+
+fetch_pokemon() {
+  name="$1"
+  echo "Fetching data for $name..."
+  curl -s -f "$API_URL/$name" -o "$OUTPUT_DIR/$name.json"
+  if [ $? -eq 0 ]; then
+    echo "Saved data to $OUTPUT_DIR/$name.json ✅"
+  else
+    echo "Failed to fetch data for $name ❌" | tee -a "$ERROR_LOG"
+  fi
+}
+
+for name in "${POKEMON_LIST[@]}"; do
+  fetch_pokemon "$name" &
+done
+
+wait
+
+echo "All parallel fetches complete."
