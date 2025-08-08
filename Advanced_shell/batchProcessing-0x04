@@ -24,13 +24,13 @@ for name in "${POKEMON_LIST[@]}"; do
   fetch_pokemon "$name" &
 done
 
-# List background jobs
+# jobs
 jobs
 
-# Wait for all background jobs to finish
+# wait
 wait
 
-# Kill any remaining background jobs (should be none, but for checker compliance)
+# kill
 kill $(jobs -p) 2>/dev/null
 
 echo "All parallel fetches complete."
